@@ -7,5 +7,6 @@ public interface IDAO {
 	public void update();
 	public void delete();
 	
+//:v
 
 }
