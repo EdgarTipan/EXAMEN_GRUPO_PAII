@@ -12,23 +12,21 @@ import model.Hero;
 public class Container {
 
 	final int SCREEN_WIDTH = 700;
-	final int SCREEN_HEIGHT = 200;
+	final int SCREEN_HEIGHT = 300;
 	Hero hero = new Hero(3);
 	List<Enemy> enemies = new ArrayList<Enemy>();
 	Random r = new Random();
 
 	public Container() {
-		enemies.add(new Enemy(r.nextInt(SCREEN_WIDTH), r.nextInt(200),5));
-		enemies.add(new Enemy(r.nextInt(SCREEN_WIDTH), r.nextInt(200),5));
-		enemies.add(new Enemy(r.nextInt(SCREEN_WIDTH), r.nextInt(200),5));
-		enemies.add(new Enemy(r.nextInt(SCREEN_WIDTH), r.nextInt(200),5));
-		enemies.add(new Enemy(r.nextInt(SCREEN_WIDTH), r.nextInt(200),5));
+		for (int i = 0; i < 5; i++) {
+			enemies.add(new Enemy(r.nextInt(SCREEN_WIDTH), r.nextInt(200), 5));
+		}
 	}
 
 	public void draw(Graphics g) {
 		hero.draw(g);
-		for (int i = 0; i < enemies.size(); i++) {
-			enemies.get(i).draw(g);
+		for (Enemy enemy : enemies) {
+			enemy.draw(g);
 		}
 
 	}
@@ -47,8 +45,8 @@ public class Container {
 	}
 
 	public void moveDown(int var) {
-		for (int i = 0; i < enemies.size(); i++) {
-			enemies.get(i).moveDown(var);
+		for (Enemy enemy : enemies) {
+			enemy.moveDown(var);
 		}
 	}
 
