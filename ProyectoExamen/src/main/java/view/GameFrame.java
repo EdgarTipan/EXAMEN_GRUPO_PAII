@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.Serial;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -13,9 +14,12 @@ import controller.Container;
 
 public class GameFrame extends JFrame implements KeyListener {
 
+	@Serial
 	private static final long serialVersionUID = 1L;
-	private Container con;
-	private JPanel contPanel;
+	private final Container con;
+	private final JPanel contPanel;
+	private final int width = 800;
+	private final int height = 600;
 
 	public GameFrame(String title) {
 		super(title);
@@ -25,7 +29,7 @@ public class GameFrame extends JFrame implements KeyListener {
 			@Override
 			protected void paintComponent(Graphics g) {
 				super.paintComponent(g);
-				con.draw(g);
+				con.drawScreenElements(g,width,height,20);
 			}
 		};
 
@@ -34,14 +38,17 @@ public class GameFrame extends JFrame implements KeyListener {
 		addKeyListener(this);
 
 		setSize(800, 600);
+		setLocationRelativeTo(null);
+		setResizable(false);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 
 		Timer timer = new Timer(100, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				con.moveDown(1);
+				con.enemyMove("DOWN",1);
 				contPanel.repaint();
 			}
+
 		});
 		timer.start();
 	}
@@ -56,13 +63,13 @@ public class GameFrame extends JFrame implements KeyListener {
 		setFocusable(true);
 		switch (e.getKeyCode()) {
 			case KeyEvent.VK_A:
-				con.moveLeft(10);
+				con.heroMove("LEFT", 10);
 				break;
 			case KeyEvent.VK_D:
-				con.moveRight(10);
+				con.heroMove("RIGHT",10);
 				break;
 			case KeyEvent.VK_SPACE:
-				con.drawShoot(contPanel.getGraphics());
+				con.drawShoot(getGraphics());
 				break;
 			default:
 				break;
