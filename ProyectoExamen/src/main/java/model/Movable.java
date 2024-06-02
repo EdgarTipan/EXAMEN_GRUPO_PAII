@@ -1,4 +1,4 @@
-package model_package;
+package model;
 
 public interface Movable {
 

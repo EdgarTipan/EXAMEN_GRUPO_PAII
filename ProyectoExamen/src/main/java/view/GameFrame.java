@@ -1,4 +1,4 @@
-package view_package;
+package view;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -11,7 +11,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import controller_package.Container;
+import controller.Container;
 
 public class GameFrame extends JFrame implements KeyListener{
 	

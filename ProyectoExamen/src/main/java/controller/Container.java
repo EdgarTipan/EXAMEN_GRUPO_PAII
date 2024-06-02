@@ -1,13 +1,13 @@
-package controller_package;
+package controller;
 
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import model_package.Bullet;
-import model_package.Enemy;
-import model_package.Hero;
+import model.Bullet;
+import model.Enemy;
+import model.Hero;
 
 public class Container {
 

@@ -1,6 +1,6 @@
-package main_package;
+package main;
 
-import view_package.GameFrame;
+import view.GameFrame;
 
 public class Main {
 

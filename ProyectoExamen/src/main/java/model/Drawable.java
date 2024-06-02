@@ -1,4 +1,4 @@
-package model_package;
+package model;
 
 import java.awt.Graphics;
 
