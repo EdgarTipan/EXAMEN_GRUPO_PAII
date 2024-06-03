@@ -20,6 +20,7 @@ public class GameFrame extends JFrame implements KeyListener {
 	private final JPanel contPanel;
 	private final int width = 800;
 	private final int height = 600;
+	private boolean isPaused = false;
 
 	public GameFrame(String title) {
 		super(title);
@@ -29,7 +30,10 @@ public class GameFrame extends JFrame implements KeyListener {
 			@Override
 			protected void paintComponent(Graphics g) {
 				super.paintComponent(g);
-				con.drawScreenElements(g,width,height,20);
+				con.drawScreenElements(g, width, height, 20);
+				if (isPaused) {
+					con.drawPauseScreen(g, width, height);
+				}
 			}
 		};
 
@@ -45,8 +49,10 @@ public class GameFrame extends JFrame implements KeyListener {
 		Timer timer = new Timer(100, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				con.enemyMove("DOWN",1);
-				contPanel.repaint();
+				if (!isPaused) {
+					con.enemyMove("DOWN", 1);
+					contPanel.repaint();
+				}
 			}
 
 		});
@@ -71,6 +77,9 @@ public class GameFrame extends JFrame implements KeyListener {
 			case KeyEvent.VK_SPACE:
 				con.drawShoot(getGraphics());
 				break;
+			case KeyEvent.VK_ESCAPE: // Tecla para pausar/despausar
+				togglePause();
+				break;
 			default:
 				break;
 		}
@@ -80,5 +89,9 @@ public class GameFrame extends JFrame implements KeyListener {
 	@Override
 	public void keyReleased(KeyEvent e) {
 		// No se necesita implementación
+	}
+
+	private void togglePause() {
+		isPaused = !isPaused;
 	}
 }
