@@ -3,6 +3,7 @@ package util;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 public class FontUtil {
 
@@ -10,13 +11,15 @@ public class FontUtil {
 
     static {
         try {
-            // Cargar la fuente desde el archivo
-            File fontFile = new File("src/main/resources/arcadeclassic.regular.ttf");
-            basePixelFont = Font.createFont(Font.TRUETYPE_FONT, fontFile);
-
-            // Registrar la fuente en el entorno gráfico
-            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            ge.registerFont(basePixelFont);
+            InputStream is = FontUtil.class.getResourceAsStream("/arcadeclassic.regular.ttf");
+            if (is != null) {
+                basePixelFont = Font.createFont(Font.TRUETYPE_FONT, is);
+                
+                GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+                ge.registerFont(basePixelFont);
+            } else {
+                throw new IOException("No se pudo encontrar el archivo de fuente.");
+            }
 
         } catch (IOException | FontFormatException e) {
             e.printStackTrace();
