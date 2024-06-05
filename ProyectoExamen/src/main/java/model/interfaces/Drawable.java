@@ -6,6 +6,6 @@ import java.awt.Graphics;
 
 public interface Drawable {
 
-	public void draw(Graphics graphics, Role p);
+	public void draw(Graphics g, Role p);
 
 }

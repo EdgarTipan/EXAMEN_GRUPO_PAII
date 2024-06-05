@@ -20,6 +20,8 @@ public class GameFrame extends JFrame implements KeyListener {
 	private final JPanel contPanel;
 	private final int width = 800;
 	private final int height = 600;
+	private boolean isPaused = false;
+	private boolean isStartScreen = true;
 
 	public GameFrame(String title) {
 		super(title);
@@ -29,7 +31,14 @@ public class GameFrame extends JFrame implements KeyListener {
 			@Override
 			protected void paintComponent(Graphics g) {
 				super.paintComponent(g);
-				con.drawScreenElements(g,width,height,20);
+				if (isStartScreen) {
+					con.drawStartScreen(g, width, height);
+				} else {
+					con.drawScreenElements(g, width, height,50);
+					if (isPaused) {
+						con.drawPauseScreen(g, width, height);
+					}
+				}
 			}
 		};
 
@@ -42,13 +51,17 @@ public class GameFrame extends JFrame implements KeyListener {
 		setResizable(false);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-		Timer timer = new Timer(100, new ActionListener() {
+
+		Timer timer = new Timer(30, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				con.enemyMove("DOWN",1);
-				contPanel.repaint();
+				if (!isPaused && !isStartScreen) {
+					con.enemyMove("DOWN",0);
+					con.updateGame();
+					con.updateBackground(); // Actualiza el fondo estelar
+					contPanel.repaint();
+				}
 			}
-
 		});
 		timer.start();
 	}
@@ -61,6 +74,11 @@ public class GameFrame extends JFrame implements KeyListener {
 	@Override
 	public void keyPressed(KeyEvent e) {
 		setFocusable(true);
+		if (isStartScreen) {
+			isStartScreen = false;
+			contPanel.repaint();
+			return;
+		}
 		switch (e.getKeyCode()) {
 			case KeyEvent.VK_A:
 				con.heroMove("LEFT", 10);
@@ -69,7 +87,10 @@ public class GameFrame extends JFrame implements KeyListener {
 				con.heroMove("RIGHT",10);
 				break;
 			case KeyEvent.VK_SPACE:
-				con.drawShoot(getGraphics());
+				con.heroShootBullet();
+				break;
+			case KeyEvent.VK_ESCAPE: // Tecla para pausar/despausar
+				togglePause();
 				break;
 			default:
 				break;
@@ -80,5 +101,9 @@ public class GameFrame extends JFrame implements KeyListener {
 	@Override
 	public void keyReleased(KeyEvent e) {
 		// No se necesita implementación
+	}
+
+	private void togglePause() {
+		isPaused = !isPaused;
 	}
 }

@@ -1,33 +1,70 @@
 package model;
 
+import model.interfaces.Collidable;
 import model.interfaces.Drawable;
 import model.interfaces.Movable;
+import model.interfaces.Shootable;
 
-import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.*;
 
-public class Bullet implements Drawable, Movable {
-	int[] coord_Y = {0,1,2,3,4};
+public class Bullet implements Drawable, Movable, Collidable {
+
+	private final int posX;
+    private int posY;
+	private boolean active = true;
+
+	public Bullet(int x, int y) {
+		this.posX = x;
+		this.posY = y;
+	}
+
+	public int getY() {
+		return posY;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void deactivate() {
+		this.active = false;
+	}
+
+	@Override
+	public void draw(Graphics g, Role p) {
+		g.setColor(Color.WHITE);
+		g.fillOval(posX-5, posY-5, 10, 15);
+	}
 
 	@Override
 	public void move(String direction, int movSpeed) {
 		switch (direction) {
-			case "DOWN":
-				for (int i = 0; i < coord_Y.length; i++) {
-					coord_Y[i] = coord_Y[i] + movSpeed;
+
+			case "UP":
+				if (posY > -15) {
+					posY = getY() - movSpeed;
 				}
 				break;
-			case "UP":
-				for (int i = 0; i < coord_Y.length; i++) {
-					coord_Y[i] = coord_Y[i] - movSpeed;
+			case "DOWN":
+				if (posY < 800) {
+					posY = getY() + movSpeed;
 				}
 				break;
 		}
 	}
 
 	@Override
-	public void draw(Graphics graphics, Role p) {
-		graphics.setColor(Color.WHITE);
-		graphics.fillOval(p.coord_X[1]-4, p.coord_Y[1]-10,10,10);
+	public Rectangle getBounds() {
+		return new Rectangle(posX, posY, 5, 10);
 	}
+
+	@Override
+	public void onCollision(Collidable other) {
+		if (other instanceof Enemy) {
+			this.deactivate();
+		}
+	}
+
 }
+
+
