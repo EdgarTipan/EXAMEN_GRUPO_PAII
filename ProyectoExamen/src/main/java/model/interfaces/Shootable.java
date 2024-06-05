@@ -4,6 +4,6 @@ import java.awt.*;
 
 public interface Shootable {
 
-    void shoot();
+    void shoot(int bulletDamageValue);
 
 }

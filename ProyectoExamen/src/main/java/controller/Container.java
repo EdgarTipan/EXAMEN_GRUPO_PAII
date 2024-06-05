@@ -31,7 +31,7 @@ public class Container {
         int scale = 1; // Factor de escala
 
         for (int i = 0; i < 5; i++) {
-            enemies.add(new Enemy(5, initPosX, initPosY, scale));
+            enemies.add(new Enemy(5, initPosX, initPosY, scale, 20));
             initPosX += 50 * (scale*2);
         }
     }
@@ -88,7 +88,7 @@ public class Container {
     }
 
     public void heroShootBullet(){
-        hero.shoot();
+        hero.shoot(25);
     }
 
     private void updateBullets() {
@@ -134,22 +134,22 @@ public class Container {
 
     private void checkCollisions() {
         List<Bullet> bullets = hero.getBullets();
-
         Iterator<Bullet> bulletIterator = bullets.iterator();
         while (bulletIterator.hasNext()) {
             Bullet bullet = bulletIterator.next();
-            for (Enemy enemy : enemies) {
+            Iterator<Enemy> enemyIterator = enemies.iterator();
+            while(enemyIterator.hasNext()){
+                Enemy enemy = enemyIterator.next();
                 if (bullet.getBounds().intersects(enemy.getBounds())) {
                     bullet.onCollision(enemy);
                     enemy.onCollision(bullet);
                     user.setScore(user.getScore()+5);
-
                     if (!bullet.isActive()) {
                         bulletIterator.remove();
                     }
-/*                    if (!((Enemy) enemy).isActive()) {
+                    if (!enemy.isActive()) {
                         enemyIterator.remove();
-                    }*/
+                    }
                 }
             }
         }

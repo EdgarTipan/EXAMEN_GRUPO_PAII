@@ -11,11 +11,17 @@ public class Bullet implements Drawable, Movable, Collidable {
 
 	private final int posX;
     private int posY;
+	private final int bulletDamage;
 	private boolean active = true;
 
-	public Bullet(int x, int y) {
+	public Bullet(int x, int y, int bDamage) {
+		this.bulletDamage = bDamage;
 		this.posX = x;
 		this.posY = y;
+	}
+
+	public int getBulletDamage() {
+		return bulletDamage;
 	}
 
 	public int getY() {
@@ -26,7 +32,7 @@ public class Bullet implements Drawable, Movable, Collidable {
 		return active;
 	}
 
-	public void deactivate() {
+	private void deactivate() {
 		this.active = false;
 	}
 

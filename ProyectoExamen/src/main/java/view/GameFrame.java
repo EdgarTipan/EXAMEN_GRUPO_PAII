@@ -56,9 +56,9 @@ public class GameFrame extends JFrame implements KeyListener {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (!isPaused && !isStartScreen) {
-					con.enemyMove("DOWN",0);
+					con.updateBackground();
+					con.enemyMove("DOWN",1git );
 					con.updateGame();
-					con.updateBackground(); // Actualiza el fondo estelar
 					contPanel.repaint();
 				}
 			}

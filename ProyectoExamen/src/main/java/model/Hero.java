@@ -55,12 +55,12 @@ public class Hero extends Role {
     }
 
     @Override
-    public void shoot() {
+    public void shoot(int bulletDamageValue) {
         long currentTime = System.currentTimeMillis();
         if (currentTime - lastShootTime >= SHOOT_COOLDOWN) {
             int bulletX = getCoordX(1); // Coordenada X central de la nave
             int bulletY = getCoordY(1); // Coordenada Y central de la nave
-            bullets.add(new Bullet(bulletX, bulletY));
+            bullets.add(new Bullet(bulletX, bulletY, bulletDamageValue));
             lastShootTime = currentTime;
         }
     }

@@ -10,11 +10,13 @@ public class Enemy extends Role {
 
     private final List<Bullet> bullets = new ArrayList<>();
 
-    public Enemy(int value, int initPosX, int initPosY, int scale) {
+    private int enemyHealth;
+    private boolean active = true;
+    public Enemy(int value, int initPosX, int initPosY, int scale, int enemyHealth) {
         super(value);
-        int numPoints = 5;
-        coord_X = new int[numPoints];
-        coord_Y = new int[numPoints];
+        this.enemyHealth = enemyHealth;
+        coord_X = new int[value];
+        coord_Y = new int[value];
 
         coord_X[0] = initPosX;
         coord_Y[0] = initPosY;
@@ -54,6 +56,14 @@ public class Enemy extends Role {
         }
     }
 
+    public boolean isActive() {
+        return active;
+    }
+
+    private void deactivate() {
+        this.active = false;
+    }
+
     @Override
     public void draw(Graphics graphics, Role p) {
         graphics.setColor(Color.GREEN);
@@ -61,10 +71,10 @@ public class Enemy extends Role {
     }
 
     @Override
-    public void shoot() {
-        int bulletX = getCoordX(1); // Coordenada X central de la nave
+    public void shoot(int bulletDamageValue) {
+/*        int bulletX = getCoordX(1); // Coordenada X central de la nave
         int bulletY = getCoordY(1); // Coordenada Y central de la nave
-        bullets.add(new Bullet(bulletX, bulletY));
+        bullets.add(new Bullet(bulletX, bulletY));*/
     }
 
     public List<Bullet> getBullets() {
@@ -79,9 +89,12 @@ public class Enemy extends Role {
     @Override
     public void onCollision(Collidable other) {
         if (other instanceof Bullet) {
-            // Lógica cuando el Enemy colisiona con una Bullet
-            System.out.println("Enemy ha sido golpeado por una Bullet!");
-            // Implementa la lógica deseada, como eliminar el Enemy o la Bullet
+            this.enemyHealth -= ((Bullet) other).getBulletDamage();
+            if(this.enemyHealth < 0){
+                this.deactivate();
+            }
         }
     }
+
+
 }
