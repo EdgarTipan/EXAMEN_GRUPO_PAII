@@ -57,7 +57,7 @@ public class GameFrame extends JFrame implements KeyListener {
 			public void actionPerformed(ActionEvent e) {
 				if (!isPaused && !isStartScreen) {
 					con.updateBackground();
-					con.enemyMove("DOWN",1git );
+					con.enemyMove("DOWN",1);
 					con.updateGame();
 					contPanel.repaint();
 				}
