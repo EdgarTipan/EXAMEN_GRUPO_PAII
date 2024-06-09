@@ -15,7 +15,6 @@ import util.StarBackground;
 import javax.swing.*;
 
 public class Container implements Level {
-
     private final Hero hero;
     private final List<Enemy> enemies;
     private final StarBackground starBackground;
@@ -28,11 +27,12 @@ public class Container implements Level {
     private int y = 700;
     private final int[][] levelConfigurations;
     private boolean isGameOver = false;
+    private boolean isGameWon = false;
     private Timer enemyMovementTimer;
     private Timer enemyShootingTimer;
 
     public Container() {
-        hero = new Hero(3,0,100);
+        hero = new Hero(3, 0, 100);
         enemies = new ArrayList<>();
 
         upperPixelFont = FontUtil.getPixelFont(36f);
@@ -41,14 +41,14 @@ public class Container implements Level {
         startScreenMiniFont = FontUtil.getPixelFont(20f);
 
         currentLevel = 1;
-        levelConfigurations = new int[][]{
+        levelConfigurations = new int[][] {
                 {5, 20},
                 {5, 60},
                 {1, 100}
         };
 
         setup();
-        starBackground = new StarBackground(800, 600, 100); // Inicializar el fondo de estrellas
+        starBackground = new StarBackground(800, 600, 100);
     }
 
     @Override
@@ -59,18 +59,20 @@ public class Container implements Level {
         int enemyHealth = config[1];
         int initPosX = 160;
         int initPosY = 100;
-        int scale;
-
-        if(currentLevel <3){
-            scale = 1;
-        }else{
-            scale = 2;
-        }
+        int scale = (currentLevel < 3) ? 1 : 2;
 
         for (int i = 0; i < numEnemies; i++) {
             enemies.add(new Enemy(5, initPosX, initPosY, scale, enemyHealth));
             initPosX += 50 * (scale * 2);
         }
+    }
+
+    public boolean isGameOver() {
+        return isGameOver;
+    }
+
+    public boolean isGameWon() {
+        return isGameWon;
     }
 
     public void startEnemyMovementTimer() {
@@ -122,7 +124,6 @@ public class Container implements Level {
             }
 
             hero.draw(g, hero);
-
         }
 
         g.setColor(Color.CYAN.darker());
@@ -133,22 +134,25 @@ public class Container implements Level {
 
         if (isGameOver) {
             drawGameOverScreen(g, width, height);
+        } else if (isGameWon) {
+            drawWinScreen(g, width, height);
         }
     }
 
     @Override
     public void update() {
-        if (!isGameOver) {
-            updateBullets();
-            checkCollisions();
-            checkEnemyPassedLine();
-            checkGameOver();
+        if (isGameOver || isGameWon) {
+            return;
         }
+        updateBullets();
+        checkCollisions();
+        checkEnemyPassedLine();
+        checkGameOver();
     }
 
     private void checkEnemyPassedLine() {
         for (Enemy enemy : enemies) {
-            if (enemy.getCoordY(1)-10 > y) {
+            if (enemy.getCoordY(1) - 10 > y) {
                 isGameOver = true;
                 stopGame();
                 break;
@@ -168,15 +172,16 @@ public class Container implements Level {
         if (enemyShootingTimer != null) {
             enemyShootingTimer.stop();
         }
-        // Detener cualquier otro temporizador o lógica del juego que necesite detenerse
     }
 
     public void startEnemyShootingTimer() {
-        enemyShootingTimer = new Timer(3000, e -> {
-            for (Enemy enemy : enemies) {
-                enemy.shoot(currentLevel, 10); // Nivel actual y daño de bala
-            }
-        });
+        if (enemyShootingTimer == null) {
+            enemyShootingTimer = new Timer(3000, e -> {
+                for (Enemy enemy : enemies) {
+                    enemy.shoot(currentLevel, 10);
+                }
+            });
+        }
         enemyShootingTimer.start();
     }
 
@@ -196,16 +201,13 @@ public class Container implements Level {
         }
     }
 
-
     private void checkCollisions() {
-        // Obtener las balas del héroe y los enemigos
         List<Bullet> heroBullets = hero.getBullets();
         List<Bullet> enemyBullets = new ArrayList<>();
         for (Enemy enemy : enemies) {
             enemyBullets.addAll(enemy.getBullets());
         }
 
-        // Verificar colisiones entre balas del héroe y enemigos
         Iterator<Bullet> heroBulletIterator = heroBullets.iterator();
         while (heroBulletIterator.hasNext()) {
             Bullet heroBullet = heroBulletIterator.next();
@@ -226,20 +228,13 @@ public class Container implements Level {
             }
         }
 
-        // Verificar colisiones entre balas de los enemigos y el héroe
-        Iterator<Bullet> enemyBulletIterator = enemyBullets.iterator();
-        while (enemyBulletIterator.hasNext()) {
-            Bullet enemyBullet = enemyBulletIterator.next();
+        for (Bullet enemyBullet : enemyBullets) {
             if (enemyBullet.getBounds().intersects(hero.getBounds())) {
                 enemyBullet.onCollision(hero);
                 hero.onCollision(enemyBullet);
-                if (!enemyBullet.isActive()) {
-                    enemyBulletIterator.remove();
-                }
             }
         }
     }
-
 
     @Override
     public boolean isLevelCompleted() {
@@ -252,32 +247,27 @@ public class Container implements Level {
             currentLevel++;
             setup();
         } else {
-            System.out.println("All levels completed!");
+            isGameWon = true;
+            stopGame();
         }
     }
 
     public void heroMove(String direction, int var) {
-        hero.move(direction, var);
-    }
-
-    public void heroShootBullet() {
-        hero.shoot(1,25);
-    }
-
-    public void updateBackground() {
-        if (starBackground != null) {
-            starBackground.update();
+        if (!isGameOver && !isGameWon) {
+            hero.move(direction, var);
         }
     }
 
-    public void drawGameOverScreen(Graphics g, int width, int height) {
-        Color overlayColor = new Color(0, 0, 0, 200);
-        g.setColor(overlayColor);
-        g.fillRect(0, 0, width, height);
+    public void heroShootBullet() {
+        if (!isGameOver && !isGameWon) {
+            hero.shoot(1, 25);
+        }
+    }
 
-        g.setColor(Color.RED);
-        g.setFont(pausePixelFont);
-        g.drawString("GAME OVER", (int) (width / 3.5), (height / 2));
+    public void updateBackground() {
+        if (!isGameOver && !isGameWon && starBackground != null) {
+            starBackground.update();
+        }
     }
 
     public void drawPauseScreen(Graphics g, int width, int height) {
@@ -288,6 +278,12 @@ public class Container implements Level {
         g.setColor(Color.WHITE);
         g.setFont(pausePixelFont);
         g.drawString("PAUSE", (int) (width / 2.5), (height / 2));
+    }
+
+    public void stopEnemyShootingTimer() {
+        if (enemyShootingTimer != null) {
+            enemyShootingTimer.stop();
+        }
     }
 
     public void drawStartScreen(Graphics g, int width, int height) {
@@ -304,11 +300,23 @@ public class Container implements Level {
         g.drawString("Presione cualquier tecla para iniciar", (int) (width / 4.25), (int) (height / 1.8));
     }
 
+    public void drawGameOverScreen(Graphics g, int width, int height) {
+        Color overlayColor = new Color(0, 0, 0, 200);
+        g.setColor(overlayColor);
+        g.fillRect(0, 0, width, height);
 
-    public void stopEnemyShootingTimer() {
-        if (enemyShootingTimer != null) {
-            enemyShootingTimer.stop();
-        }
+        g.setColor(Color.RED);
+        g.setFont(pausePixelFont);
+        g.drawString("GAME OVER", (int) (width / 3.5), (height / 2));
     }
 
+    public void drawWinScreen(Graphics g, int width, int height) {
+        Color overlayColor = new Color(0, 0, 0, 200);
+        g.setColor(overlayColor);
+        g.fillRect(0, 0, width, height);
+
+        g.setColor(Color.GREEN);
+        g.setFont(pausePixelFont);
+        g.drawString("YOU WIN!", (int) (width / 3.5), (height / 2));
+    }
 }

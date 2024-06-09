@@ -68,13 +68,13 @@ public class Enemy extends Role {
                 bullets.add(new Bullet(this.coord_X[2], this.coord_Y[2], bulletDamageValue)); // Dispara desde el centro
                 break;
             case 2:
-                bullets.add(new Bullet(this.coord_X[0], this.coord_Y[0], bulletDamageValue)); // Dispara desde la izquierda
-                bullets.add(new Bullet(this.coord_X[4], this.coord_Y[4], bulletDamageValue)); // Dispara desde la derecha
+                bullets.add(new Bullet(this.coord_X[1], this.coord_Y[1], bulletDamageValue)); // Dispara desde la izquierda
+                bullets.add(new Bullet(this.coord_X[3], this.coord_Y[3], bulletDamageValue)); // Dispara desde la derecha
                 break;
             case 3:
-                bullets.add(new Bullet(this.coord_X[2], this.coord_Y[2], bulletDamageValue)); // Dispara desde el centro
-                bullets.add(new Bullet(this.coord_X[0], this.coord_Y[0], bulletDamageValue)); // Dispara desde la izquierda
-                bullets.add(new Bullet(this.coord_X[4], this.coord_Y[4], bulletDamageValue)); // Dispara desde la derecha
+                bullets.add(new Bullet(this.coord_X[1], this.coord_Y[1], bulletDamageValue)); // Dispara desde el centro
+                bullets.add(new Bullet(this.coord_X[2], this.coord_Y[2], bulletDamageValue)); // Dispara desde la izquierda
+                bullets.add(new Bullet(this.coord_X[3], this.coord_Y[3], bulletDamageValue)); // Dispara desde la derecha
                 break;
         }
     }
