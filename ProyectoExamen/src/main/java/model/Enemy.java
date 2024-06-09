@@ -8,12 +8,9 @@ import java.util.List;
 
 public class Enemy extends Role {
 
+    // Variables de la clase y constructor:
+
     private final List<Bullet> bullets = new ArrayList<>();
-
-    public int getEnemyHealth() {
-        return enemyHealth;
-    }
-
     private int enemyHealth;
     private boolean active = true;
 
@@ -39,13 +36,10 @@ public class Enemy extends Role {
         coord_Y[4] = initPosY;
     }
 
-    @Override
-    public void move(String direction, int movSpeed) {
-        if (direction.equals("DOWN")) {
-            for (int i = 0; i < coord_Y.length; i++) {
-                coord_Y[i] = coord_Y[i] + movSpeed;
-            }
-        }
+    // Getters, Setters y Metodos adicionales de la clase:
+
+    public int getEnemyHealth() {
+        return enemyHealth;
     }
 
     public boolean isActive() {
@@ -54,6 +48,21 @@ public class Enemy extends Role {
 
     private void deactivate() {
         this.active = false;
+    }
+
+    public List<Bullet> getBullets() {
+        return bullets;
+    }
+
+    // Metodos implementados:
+
+    @Override
+    public void move(String direction, int movSpeed) {
+        if (direction.equals("DOWN")) {
+            for (int i = 0; i < coord_Y.length; i++) {
+                coord_Y[i] = coord_Y[i] + movSpeed;
+            }
+        }
     }
 
     @Override
@@ -83,11 +92,6 @@ public class Enemy extends Role {
         }
     }
 
-
-    public List<Bullet> getBullets() {
-        return bullets;
-    }
-
     @Override
     public Rectangle getBounds() {
         return new Rectangle(coord_X[0], coord_Y[0], coord_X[4] - coord_X[0], coord_Y[2] - coord_Y[0]);
@@ -103,5 +107,4 @@ public class Enemy extends Role {
             }
         }
     }
-
 }

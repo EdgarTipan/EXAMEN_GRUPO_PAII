@@ -3,78 +3,82 @@ package model;
 import model.interfaces.Collidable;
 import model.interfaces.Drawable;
 import model.interfaces.Movable;
-import model.interfaces.Shootable;
 
 import java.awt.*;
 
 public class Bullet implements Drawable, Movable, Collidable {
 
-	private final int posX;
+	// Variables de la clase y constructor:
+
+    private final int posX;
     private int posY;
-	private final int bulletDamage;
-	private boolean active = true;
+    private final int bulletDamage;
+    private boolean active = true;
 
-	public Bullet(int x, int y, int bDamage) {
-		this.bulletDamage = bDamage;
-		this.posX = x;
-		this.posY = y;
-	}
+    public Bullet(int x, int y, int bDamage) {
+        this.bulletDamage = bDamage;
+        this.posX = x;
+        this.posY = y;
+    }
 
-	public int getBulletDamage() {
-		return bulletDamage;
-	}
+	// Getters, Setters y Metodos adicionales de la clase:
 
-	public int getY() {
-		return posY;
-	}
+    public int getBulletDamage() {
+        return bulletDamage;
+    }
 
-	public boolean isActive() {
-		return active;
-	}
+    public int getY() {
+        return posY;
+    }
 
-	private void deactivate() {
-		this.active = false;
-	}
+    public boolean isActive() {
+        return active;
+    }
 
-	@Override
-	public void draw(Graphics g, Role p) {
-		g.setColor(Color.WHITE);
-		g.fillOval(posX-5, posY-5, 10, 15);
-	}
+    private void deactivate() {
+        this.active = false;
+    }
 
-	@Override
-	public void move(String direction, int movSpeed) {
-		switch (direction) {
+	// Metodos implementados:
 
-			case "UP":
-				if (posY > -15) {
-					posY = getY() - movSpeed;
-				}else{
-					this.deactivate();
-				}
-				break;
-			case "DOWN":
-				if (posY < 800) {
-					posY = getY() + movSpeed;
-				}else{
-					this.deactivate();
-				}
-				break;
-		}
-	}
+    @Override
+    public void draw(Graphics g, Role p) {
+        g.setColor(Color.WHITE);
+        g.fillOval(posX - 5, posY - 5, 10, 15);
+    }
 
-	@Override
-	public Rectangle getBounds() {
-		return new Rectangle(posX - 5, posY - 5, 10, 15);
-	}
+    @Override
+    public void move(String direction, int movSpeed) {
+        switch (direction) {
 
-	@Override
-	public void onCollision(Collidable other) {
-		if (other instanceof Hero || other instanceof Enemy) {
-			this.deactivate();
-		}
-	}
+            case "UP":
+                if (posY > -15) {
+                    posY = getY() - movSpeed;
+                } else {
+                    this.deactivate();
+                }
+                break;
+            case "DOWN":
+                if (posY < 800) {
+                    posY = getY() + movSpeed;
+                } else {
+                    this.deactivate();
+                }
+                break;
+        }
+    }
 
+    @Override
+    public Rectangle getBounds() {
+        return new Rectangle(posX - 5, posY - 5, 10, 15);
+    }
+
+    @Override
+    public void onCollision(Collidable other) {
+        if (other instanceof Hero || other instanceof Enemy) {
+            this.deactivate();
+        }
+    }
 }
 
 

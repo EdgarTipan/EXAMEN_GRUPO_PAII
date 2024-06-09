@@ -1,13 +1,16 @@
 package util;
 
 import java.awt.*;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
 public class FontUtil {
 
+    // Clase utilizada para cargar la fuente pixel que se utilizo
+
     private static Font basePixelFont;
+
+    // Metodo estatico utilizado para cargar una fuente
 
     static {
         try {
@@ -25,6 +28,8 @@ public class FontUtil {
             e.printStackTrace();
         }
     }
+
+    // Metodo estatico utilizado para obtener una fuentede un tamaño especificado
 
     public static Font getPixelFont(float size) {
         if (basePixelFont != null) {

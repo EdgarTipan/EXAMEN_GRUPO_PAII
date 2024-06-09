@@ -8,12 +8,13 @@ import java.util.List;
 
 public class Hero extends Role {
 
+    // Variables de la clase y constructor:
+
     private final List<Bullet> bullets = new ArrayList<>();
     private long lastShootTime = 0;
     private static final int SHOOT_COOLDOWN = 200;
     private int score;
     private int health;
-
 
     public Hero(int value, int score, int health) {
         super(value);
@@ -22,6 +23,40 @@ public class Hero extends Role {
         this.score = score;
         this.health = health;
     }
+
+    // Getters, Setters y Metodos adicionales de la clase:
+
+    public int getScore() {
+        return score;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public List<Bullet> getBullets() {
+        return bullets;
+    }
+
+    private boolean canMove(int deltaX) {
+        for (int coordX : coord_X) {
+            int newX = coordX + deltaX;
+            if (newX < 0 || newX > 790) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean isDead() {
+        return this.health <= 0;
+    }
+
+    // Metodos implementados:
 
     @Override
     public void move(String direction, int movSpeed) {
@@ -43,16 +78,6 @@ public class Hero extends Role {
         }
     }
 
-    private boolean canMove(int deltaX) {
-        for (int coordX : coord_X) {
-            int newX = coordX + deltaX;
-            if (newX < 0 || newX > 790) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     @Override
     public void draw(Graphics graphics, Role p) {
         graphics.setColor(Color.BLUE);
@@ -70,14 +95,10 @@ public class Hero extends Role {
         }
     }
 
-    public List<Bullet> getBullets() {
-        return bullets;
-    }
-
     @Override
     public Rectangle getBounds() {
-        return new Rectangle((coord_X[0]+25),
-                coord_Y[0]-25,
+        return new Rectangle((coord_X[0] + 25),
+                coord_Y[0] - 25,
                 50,
                 25);
     }
@@ -89,21 +110,4 @@ public class Hero extends Role {
             bullet.onCollision(this); // Desactivar la bala
         }
     }
-
-    public boolean isDead() {
-        return this.health <= 0;
-    }
-
-    public int getScore() {
-        return score;
-    }
-
-    public int getHealth() {
-        return health;
-    }
-
-    public void setScore(int score) {
-        this.score = score;
-    }
-
 }

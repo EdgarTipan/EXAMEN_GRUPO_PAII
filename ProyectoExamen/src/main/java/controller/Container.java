@@ -15,6 +15,9 @@ import util.StarBackground;
 import javax.swing.*;
 
 public class Container implements Level {
+
+    // Variables de la clase y constructor:
+
     private final Hero hero;
     private final List<Enemy> enemies;
     private final StarBackground starBackground;
@@ -22,7 +25,6 @@ public class Container implements Level {
     private final Font pausePixelFont;
     private final Font startScreenFont;
     private final Font startScreenMiniFont;
-
     private int currentLevel;
     private int y = 700;
     private final int[][] levelConfigurations;
@@ -52,32 +54,7 @@ public class Container implements Level {
         starBackground = new StarBackground(800, 600, 100);
     }
 
-    @Override
-    public void setup() {
-        enemies.clear();
-        int[] config = levelConfigurations[currentLevel - 1];
-        int numEnemies = config[0];
-        int enemyHealth = config[1];
-        int initPosX = 160;
-        int initPosY = 100;
-        int scale = (currentLevel < 3) ? 1 : 3;
-
-        for (int i = 0; i < numEnemies; i++) {
-            switch (currentLevel) {
-                case 1, 2:
-                    if (i == 5) {
-                        initPosX = 160;
-                        initPosY += 35 * (scale * 2);
-                    }
-                    break;
-                case 3:
-                    initPosX = 300;
-                    initPosY += 30;
-            }
-            enemies.add(new Enemy(5, initPosX, initPosY, scale, enemyHealth));
-            initPosX += 50 * (scale * 2);
-        }
-    }
+    // Getters, Setters y Metodos adicionales de la clase:
 
     public boolean isGameOver() {
         return isGameOver;
@@ -108,78 +85,6 @@ public class Container implements Level {
         for (Enemy enemy : enemies) {
             enemy.move("DOWN", (40-(currentLevel*10)));
         }
-    }
-
-    @Override
-    public void draw(Graphics g, int width, int height) {
-        if (starBackground != null) {
-            starBackground.draw(g, null);
-        }
-
-        g.setColor(Color.RED.brighter());
-        y = (int) (height * 0.66);
-        g.drawLine(0, y, width, y);
-
-        for (Bullet bullet : hero.getBullets()) {
-            bullet.draw(g, hero);
-        }
-
-        g.setColor(Color.RED);
-        if (upperPixelFont != null) {
-            g.setFont(upperPixelFont);
-            g.drawString("HIGH SCORE", (int) (width / 2.7), 30);
-            g.drawString("LEVEL " + currentLevel, (width / 11), 30);
-            g.drawString("SCORE", (int) (width / 1.35), 30);
-
-            g.setColor(Color.WHITE);
-            g.drawString("0", (int) (width / 2.15), 60);
-            g.drawString(String.valueOf(hero.getScore()), (int) (width / 1.26), 60);
-
-            for (Enemy enemy : enemies) {
-                enemy.draw(g, enemy);
-            }
-
-            hero.draw(g, hero);
-        }
-
-        int enemyBar;
-
-        if(!enemies.isEmpty()){
-            enemyBar = enemies.getFirst().getEnemyHealth();
-        } else {
-            enemyBar = 0;
-        }
-
-        if(currentLevel == 3){
-            g.setColor(Color.ORANGE.darker());
-            g.drawRect((int) (width / 2.55), 80, 130, 20);
-
-            g.setColor(Color.ORANGE.brighter());
-            g.fillRect((int) (width / 2.55)+2, 82, (( enemyBar * 126) / 100), 16);
-        }
-
-        g.setColor(Color.CYAN.darker());
-        g.drawRect((int) (width / 11.6), 40, 130, 20);
-
-        g.setColor(Color.CYAN.brighter());
-        g.fillRect((int) (width / 11.3), 42, ((hero.getHealth() * 126) / 100), 16);
-
-        if (isGameOver) {
-            drawGameOverScreen(g, width, height);
-        } else if (isGameWon) {
-            drawWinScreen(g, width, height);
-        }
-    }
-
-    @Override
-    public void update() {
-        if (isGameOver || isGameWon) {
-            return;
-        }
-        updateBullets();
-        checkCollisions();
-        checkEnemyPassedLine();
-        checkGameOver();
     }
 
     private void checkEnemyPassedLine() {
@@ -233,7 +138,7 @@ public class Container implements Level {
             bullet.move("UP", 15);
             return !bullet.isActive();
         });
-        
+
         for (Enemy enemy : enemies) {
             enemy.getBullets().removeIf(bullet -> {
                 bullet.move("DOWN", 10);
@@ -274,22 +179,6 @@ public class Container implements Level {
                 enemyBullet.onCollision(hero);
                 hero.onCollision(enemyBullet);
             }
-        }
-    }
-
-    @Override
-    public boolean isLevelCompleted() {
-        return enemies.isEmpty();
-    }
-
-    @Override
-    public void advanceToNextLevel() {
-        if (currentLevel < levelConfigurations.length) {
-            currentLevel++;
-            setup();
-        } else {
-            isGameWon = true;
-            stopGame();
         }
     }
 
@@ -376,5 +265,122 @@ public class Container implements Level {
         g.setColor(Color.GREEN);
         g.setFont(startScreenFont);
         g.drawString("YOU  WIN!", (width / 4), (int) (height / 1.8));
+    }
+
+    // Metodos implementados:
+
+    @Override
+    public void setup() {
+        enemies.clear();
+        int[] config = levelConfigurations[currentLevel - 1];
+        int numEnemies = config[0];
+        int enemyHealth = config[1];
+        int initPosX = 160;
+        int initPosY = 100;
+        int scale = (currentLevel < 3) ? 1 : 3;
+
+        for (int i = 0; i < numEnemies; i++) {
+            switch (currentLevel) {
+                case 1, 2:
+                    if (i == 5) {
+                        initPosX = 160;
+                        initPosY += 35 * (scale * 2);
+                    }
+                    break;
+                case 3:
+                    initPosX = 300;
+                    initPosY += 30;
+            }
+            enemies.add(new Enemy(5, initPosX, initPosY, scale, enemyHealth));
+            initPosX += 50 * (scale * 2);
+        }
+    }
+
+    @Override
+    public void draw(Graphics g, int width, int height) {
+        if (starBackground != null) {
+            starBackground.draw(g, null);
+        }
+
+        g.setColor(Color.RED.brighter());
+        y = (int) (height * 0.66);
+        g.drawLine(0, y, width, y);
+
+        for (Bullet bullet : hero.getBullets()) {
+            bullet.draw(g, hero);
+        }
+
+        g.setColor(Color.RED);
+        if (upperPixelFont != null) {
+            g.setFont(upperPixelFont);
+            g.drawString("HIGH SCORE", (int) (width / 2.7), 30);
+            g.drawString("LEVEL " + currentLevel, (width / 11), 30);
+            g.drawString("SCORE", (int) (width / 1.35), 30);
+
+            g.setColor(Color.WHITE);
+            g.drawString("0", (int) (width / 2.15), 60);
+            g.drawString(String.valueOf(hero.getScore()), (int) (width / 1.26), 60);
+
+            for (Enemy enemy : enemies) {
+                enemy.draw(g, enemy);
+            }
+
+            hero.draw(g, hero);
+        }
+
+        int enemyBar;
+
+        if(!enemies.isEmpty()){
+            enemyBar = enemies.getFirst().getEnemyHealth();
+        } else {
+            enemyBar = 0;
+        }
+
+        if(currentLevel == 3){
+            g.setColor(Color.ORANGE.darker());
+            g.drawRect((int) (width / 2.55), 80, 130, 20);
+
+            g.setColor(Color.ORANGE.brighter());
+            g.fillRect((int) (width / 2.55)+2, 82, (( enemyBar * 126) / 100), 16);
+        }
+
+        g.setColor(Color.CYAN.darker());
+        g.drawRect((int) (width / 11.6), 40, 130, 20);
+
+        g.setColor(Color.CYAN.brighter());
+        g.fillRect((int) (width / 11.3), 42, ((hero.getHealth() * 126) / 100), 16);
+
+        if (isGameOver) {
+            drawGameOverScreen(g, width, height);
+        } else if (isGameWon) {
+            drawWinScreen(g, width, height);
+        }
+    }
+
+    @Override
+    public void update() {
+        if (isGameOver || isGameWon) {
+            return;
+        }
+        updateBullets();
+        checkCollisions();
+        checkEnemyPassedLine();
+        checkGameOver();
+    }
+
+    @Override
+    public boolean isLevelCompleted() {
+        return enemies.isEmpty();
+    }
+
+    @Override
+    public void advanceToNextLevel() {
+        if (currentLevel < levelConfigurations.length) {
+            currentLevel++;
+            setup();
+        } else {
+            isGameWon = true;
+            stopGame();
+        }
     }
 }
