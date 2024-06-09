@@ -10,6 +10,10 @@ public class Enemy extends Role {
 
     private final List<Bullet> bullets = new ArrayList<>();
 
+    public int getEnemyHealth() {
+        return enemyHealth;
+    }
+
     private int enemyHealth;
     private boolean active = true;
 

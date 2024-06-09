@@ -41,9 +41,10 @@ public class Container implements Level {
         startScreenMiniFont = FontUtil.getPixelFont(20f);
 
         currentLevel = 1;
-        levelConfigurations = new int[][] {
+
+        levelConfigurations = new int[][]{
                 {5, 20},
-                {5, 60},
+                {10, 60},
                 {1, 100}
         };
 
@@ -59,9 +60,20 @@ public class Container implements Level {
         int enemyHealth = config[1];
         int initPosX = 160;
         int initPosY = 100;
-        int scale = (currentLevel < 3) ? 1 : 2;
+        int scale = (currentLevel < 3) ? 1 : 3;
 
         for (int i = 0; i < numEnemies; i++) {
+            switch (currentLevel) {
+                case 1, 2:
+                    if (i == 5) {
+                        initPosX = 160;
+                        initPosY += 35 * (scale * 2);
+                    }
+                    break;
+                case 3:
+                    initPosX = 300;
+                    initPosY += 30;
+            }
             enemies.add(new Enemy(5, initPosX, initPosY, scale, enemyHealth));
             initPosX += 50 * (scale * 2);
         }
@@ -77,7 +89,11 @@ public class Container implements Level {
 
     public void startEnemyMovementTimer() {
         if (enemyMovementTimer == null) {
-            enemyMovementTimer = new Timer(1500, e -> moveEnemiesDown());
+            if (currentLevel == 2) {
+                enemyMovementTimer = new Timer(10000, e -> moveEnemiesDown());
+            } else {
+                enemyMovementTimer = new Timer(1500, e -> moveEnemiesDown());
+            }
         }
         enemyMovementTimer.start();
     }
@@ -90,7 +106,7 @@ public class Container implements Level {
 
     private void moveEnemiesDown() {
         for (Enemy enemy : enemies) {
-            enemy.move("DOWN", 20);
+            enemy.move("DOWN", (40-(currentLevel*10)));
         }
     }
 
@@ -124,6 +140,22 @@ public class Container implements Level {
             }
 
             hero.draw(g, hero);
+        }
+
+        int enemyBar;
+
+        if(!enemies.isEmpty()){
+            enemyBar = enemies.getFirst().getEnemyHealth();
+        } else {
+            enemyBar = 0;
+        }
+
+        if(currentLevel == 3){
+            g.setColor(Color.ORANGE.darker());
+            g.drawRect((int) (width / 2.55), 80, 130, 20);
+
+            g.setColor(Color.ORANGE.brighter());
+            g.fillRect((int) (width / 2.55)+2, 82, (( enemyBar * 126) / 100), 16);
         }
 
         g.setColor(Color.CYAN.darker());
@@ -176,9 +208,20 @@ public class Container implements Level {
 
     public void startEnemyShootingTimer() {
         if (enemyShootingTimer == null) {
-            enemyShootingTimer = new Timer(3000, e -> {
+            enemyShootingTimer = new Timer(5000, e -> {
                 for (Enemy enemy : enemies) {
-                    enemy.shoot(currentLevel, 10);
+                    switch (currentLevel) {
+                        case 1:
+                            enemy.shoot(currentLevel, 5);
+                            break;
+                        case 2:
+                            enemy.shoot(currentLevel, 10);
+                            break;
+                        case 3:
+                            enemy.shoot(currentLevel, 15);
+                            break;
+
+                    }
                 }
             });
         }
@@ -186,13 +229,11 @@ public class Container implements Level {
     }
 
     private void updateBullets() {
-        // Actualizar y eliminar las balas del héroe desactivadas
         hero.getBullets().removeIf(bullet -> {
             bullet.move("UP", 15);
             return !bullet.isActive();
         });
-
-        // Actualizar y eliminar las balas de los enemigos desactivadas
+        
         for (Enemy enemy : enemies) {
             enemy.getBullets().removeIf(bullet -> {
                 bullet.move("DOWN", 10);
@@ -222,7 +263,7 @@ public class Container implements Level {
                     }
                     if (!enemy.isActive()) {
                         enemyIterator.remove();
-                        hero.setScore(hero.getScore() + 5);
+                        hero.setScore(hero.getScore() + (5 * currentLevel));
                     }
                 }
             }
@@ -260,7 +301,20 @@ public class Container implements Level {
 
     public void heroShootBullet() {
         if (!isGameOver && !isGameWon) {
-            hero.shoot(1, 25);
+            switch (currentLevel) {
+                case 1, 2:
+                    hero.shoot(1, 25);
+                    break;
+                case 3:
+                    if (hero.getHealth() > 75) {
+                        hero.shoot(1, 15);
+                    } else if (hero.getHealth() > 75 && hero.getHealth() < 50) {
+                        hero.shoot(1, 10);
+                    } else {
+                        hero.shoot(1, 5);
+                    }
+                    break;
+            }
         }
     }
 
@@ -306,8 +360,12 @@ public class Container implements Level {
         g.fillRect(0, 0, width, height);
 
         g.setColor(Color.RED);
-        g.setFont(pausePixelFont);
-        g.drawString("GAME OVER", (int) (width / 3.5), (height / 2));
+        g.setFont(startScreenFont);
+        g.drawString("GAME  OVER", (int) (width / 4.7), (int) (height / 2.1));
+
+        g.setColor(Color.WHITE);
+        g.setFont(upperPixelFont);
+        g.drawString("Score  " + hero.getScore(), (int) (width / 2.5), (int) (height / 1.8));
     }
 
     public void drawWinScreen(Graphics g, int width, int height) {
@@ -316,7 +374,7 @@ public class Container implements Level {
         g.fillRect(0, 0, width, height);
 
         g.setColor(Color.GREEN);
-        g.setFont(pausePixelFont);
-        g.drawString("YOU WIN!", (int) (width / 3.5), (height / 2));
+        g.setFont(startScreenFont);
+        g.drawString("YOU  WIN!", (width / 4), (int) (height / 1.8));
     }
 }

@@ -17,7 +17,7 @@ public class Hero extends Role {
 
     public Hero(int value, int score, int health) {
         super(value);
-        coord_X = new int[]{350, 400, 450};
+        coord_X = new int[]{325, 375, 425};
         coord_Y = new int[]{500, 450, 500};
         this.score = score;
         this.health = health;
