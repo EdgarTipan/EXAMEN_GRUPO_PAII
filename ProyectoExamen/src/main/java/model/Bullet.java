@@ -49,11 +49,15 @@ public class Bullet implements Drawable, Movable, Collidable {
 			case "UP":
 				if (posY > -15) {
 					posY = getY() - movSpeed;
+				}else{
+					this.deactivate();
 				}
 				break;
 			case "DOWN":
 				if (posY < 800) {
 					posY = getY() + movSpeed;
+				}else{
+					this.deactivate();
 				}
 				break;
 		}
@@ -61,12 +65,12 @@ public class Bullet implements Drawable, Movable, Collidable {
 
 	@Override
 	public Rectangle getBounds() {
-		return new Rectangle(posX, posY, 5, 10);
+		return new Rectangle(posX - 5, posY - 5, 10, 15);
 	}
 
 	@Override
 	public void onCollision(Collidable other) {
-		if (other instanceof Enemy) {
+		if (other instanceof Hero || other instanceof Enemy) {
 			this.deactivate();
 		}
 	}

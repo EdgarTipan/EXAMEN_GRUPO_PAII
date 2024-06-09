@@ -28,16 +28,13 @@ public class GameFrame extends JFrame implements KeyListener {
 		setLocationRelativeTo(null);
 
 		contPanel = new JPanel() {
-
 			@Override
 			protected void paintComponent(Graphics g) {
 				super.paintComponent(g);
 				if (isGameRunning) {
-					con.updateBackground();
+					con.draw(g, getWidth(), getHeight());
 					if (isPaused) {
 						con.drawPauseScreen(g, getWidth(), getHeight());
-					} else {
-						con.draw(g, getWidth(), getHeight());
 					}
 				} else {
 					con.drawStartScreen(g, getWidth(), getHeight());
@@ -51,57 +48,60 @@ public class GameFrame extends JFrame implements KeyListener {
 
 	public void startGame() {
 		isGameRunning = true;
-        Timer timer = new Timer(20, e -> {
-            if (!isPaused) {
-                con.update();
-                if (con.isLevelCompleted()) {
-                    con.advanceToNextLevel();
-                }
-            }
-            contPanel.repaint();
-        });
+		con.startEnemyMovementTimer();
+		con.startEnemyShootingTimer();
+		Timer timer = new Timer(20, e -> {
+			if (!isPaused) {
+				con.update();
+				con.updateBackground();
+				if (con.isLevelCompleted()) {
+					con.advanceToNextLevel();
+				}
+			}
+			contPanel.repaint();
+		});
 		timer.start();
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		switch (e.getKeyCode()) {
-			case KeyEvent.VK_A:
+		int key = e.getKeyCode();
+		if (isGameRunning) {
+			if (key == KeyEvent.VK_A && !isPaused) {
 				con.heroMove("LEFT", 10);
-				break;
-			case KeyEvent.VK_D:
-				con.heroMove("RIGHT",10);
-				break;
-			case KeyEvent.VK_SPACE:
+			} else if (key == KeyEvent.VK_D && !isPaused) {
+				con.heroMove("RIGHT", 10);
+			} else if (key == KeyEvent.VK_SPACE && !isPaused) {
 				con.heroShootBullet();
-				break;
-			case KeyEvent.VK_ESCAPE: // Tecla para pausar/despausar
+			} else if (key == KeyEvent.VK_ESCAPE) {
 				togglePause();
-				break;
-			default:
-				if (!isGameRunning) {
-					startGame();
-				}
-				break;
+			}
+		} else {
+			startGame();
 		}
 	}
 
-	@Override
-	public void keyReleased(KeyEvent e) {
-		// No implementación
-	}
-
-	@Override
-	public void keyTyped(KeyEvent e) {
-		// No implementación
-	}
 
 	private void togglePause() {
 		isPaused = !isPaused;
 		if (isPaused) {
 			con.stopEnemyMovementTimer();
+			con.stopEnemyShootingTimer();
 		} else {
-			con.startEnemyMovementTimerAgain();
+			con.startEnemyMovementTimer();
+			con.startEnemyShootingTimer();
 		}
 	}
+
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		// No se usa pero es necesario para implementar KeyListener
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// No se usa pero es necesario para implementar KeyListener
+	}
+
 }

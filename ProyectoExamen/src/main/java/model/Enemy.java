@@ -12,6 +12,7 @@ public class Enemy extends Role {
 
     private int enemyHealth;
     private boolean active = true;
+
     public Enemy(int value, int initPosX, int initPosY, int scale, int enemyHealth) {
         super(value);
         this.enemyHealth = enemyHealth;
@@ -36,23 +37,10 @@ public class Enemy extends Role {
 
     @Override
     public void move(String direction, int movSpeed) {
-        switch (direction) {
-            case "DOWN":
-                for (int i = 0; i < coord_Y.length; i++) {
-                    coord_Y[i] = coord_Y[i] + movSpeed;
-                }
-                break;
-            case "UP":
-                for (int i = 0; i < coord_Y.length; i++) {
-                    coord_Y[i] = coord_Y[i] - movSpeed;
-                }
-                break;
-
-            case "COLLISION":
-                for (int i = 0; i < coord_Y.length; i++) {
-                    coord_Y[i] = coord_Y[i] - 100;
-                }
-                break;
+        if (direction.equals("DOWN")) {
+            for (int i = 0; i < coord_Y.length; i++) {
+                coord_Y[i] = coord_Y[i] + movSpeed;
+            }
         }
     }
 
@@ -68,33 +56,48 @@ public class Enemy extends Role {
     public void draw(Graphics graphics, Role p) {
         graphics.setColor(Color.GREEN);
         graphics.fillPolygon(p.coord_X, p.coord_Y, 5);
+        for (Bullet bullet : bullets) {
+            bullet.draw(graphics, this);
+        }
     }
 
     @Override
-    public void shoot(int bulletDamageValue) {
-/*        int bulletX = getCoordX(1); // Coordenada X central de la nave
-        int bulletY = getCoordY(1); // Coordenada Y central de la nave
-        bullets.add(new Bullet(bulletX, bulletY));*/
+    public void shoot(int shootingCoord, int bulletDamageValue) {
+        switch (shootingCoord) {
+            case 1:
+                bullets.add(new Bullet(this.coord_X[2], this.coord_Y[2], bulletDamageValue)); // Dispara desde el centro
+                break;
+            case 2:
+                bullets.add(new Bullet(this.coord_X[0], this.coord_Y[0], bulletDamageValue)); // Dispara desde la izquierda
+                bullets.add(new Bullet(this.coord_X[4], this.coord_Y[4], bulletDamageValue)); // Dispara desde la derecha
+                break;
+            case 3:
+                bullets.add(new Bullet(this.coord_X[2], this.coord_Y[2], bulletDamageValue)); // Dispara desde el centro
+                bullets.add(new Bullet(this.coord_X[0], this.coord_Y[0], bulletDamageValue)); // Dispara desde la izquierda
+                bullets.add(new Bullet(this.coord_X[4], this.coord_Y[4], bulletDamageValue)); // Dispara desde la derecha
+                break;
+        }
     }
 
+
     public List<Bullet> getBullets() {
-		return bullets;
+        return bullets;
     }
 
     @Override
     public Rectangle getBounds() {
-        return new Rectangle(coord_X[0], coord_Y[0], coord_X[4]-coord_X[0], coord_Y[2]-coord_Y[0]);
+        return new Rectangle(coord_X[0], coord_Y[0], coord_X[4] - coord_X[0], coord_Y[2] - coord_Y[0]);
     }
 
     @Override
     public void onCollision(Collidable other) {
-        if (other instanceof Bullet) {
-            this.enemyHealth -= ((Bullet) other).getBulletDamage();
-            if(this.enemyHealth < 0){
+        if (other instanceof Bullet bullet) {
+            this.enemyHealth -= bullet.getBulletDamage();
+            bullet.onCollision(this); // Desactivar la bala
+            if (this.enemyHealth <= 0) {
                 this.deactivate();
             }
         }
     }
-
 
 }

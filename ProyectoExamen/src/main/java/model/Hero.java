@@ -11,11 +11,16 @@ public class Hero extends Role {
     private final List<Bullet> bullets = new ArrayList<>();
     private long lastShootTime = 0;
     private static final int SHOOT_COOLDOWN = 200;
+    private int score;
+    private int health;
 
-    public Hero(int value) {
+
+    public Hero(int value, int score, int health) {
         super(value);
         coord_X = new int[]{350, 400, 450};
         coord_Y = new int[]{500, 450, 500};
+        this.score = score;
+        this.health = health;
     }
 
     @Override
@@ -55,11 +60,11 @@ public class Hero extends Role {
     }
 
     @Override
-    public void shoot(int bulletDamageValue) {
+    public void shoot(int shootingCoord, int bulletDamageValue) {
         long currentTime = System.currentTimeMillis();
         if (currentTime - lastShootTime >= SHOOT_COOLDOWN) {
-            int bulletX = getCoordX(1); // Coordenada X central de la nave
-            int bulletY = getCoordY(1); // Coordenada Y central de la nave
+            int bulletX = getCoordX(shootingCoord); // Coordenada X central de la nave
+            int bulletY = getCoordY(shootingCoord); // Coordenada Y central de la nave
             bullets.add(new Bullet(bulletX, bulletY, bulletDamageValue));
             lastShootTime = currentTime;
         }
@@ -71,15 +76,34 @@ public class Hero extends Role {
 
     @Override
     public Rectangle getBounds() {
-        return new Rectangle(coord_X[0], coord_Y[0], coord_X[2] - coord_X[0], coord_Y[1] - coord_Y[0]);
+        return new Rectangle((coord_X[0]+25),
+                coord_Y[0]-25,
+                50,
+                25);
     }
 
     @Override
     public void onCollision(Collidable other) {
-        if (other instanceof Enemy) {
-            System.out.println("Hero ha colisionado con un Enemy!");
-            // Implementa la lógica deseada, como reducir la salud del Hero o del Enemy
+        if (other instanceof Bullet bullet) {
+            this.health -= bullet.getBulletDamage();
+            bullet.onCollision(this); // Desactivar la bala
         }
+    }
+
+    public boolean isDead() {
+        return this.health <= 0;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
     }
 
 }
