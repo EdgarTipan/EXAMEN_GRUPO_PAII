@@ -10,6 +10,7 @@ import model.Enemy;
 import model.Hero;
 import model.interfaces.Level;
 import util.FontUtil;
+import util.GameStateSerializer;
 import util.StarBackground;
 
 import javax.swing.*;
@@ -18,8 +19,8 @@ public class Container implements Level {
 
     // Variables de la clase y constructor:
 
-    private final Hero hero;
-    private final List<Enemy> enemies;
+    private Hero hero;
+    private List<Enemy> enemies;
     private final StarBackground starBackground;
     private final Font upperPixelFont;
     private final Font pausePixelFont;
@@ -318,7 +319,7 @@ public class Container implements Level {
             g.drawString("SCORE", (int) (width / 1.35), 30);
 
             g.setColor(Color.WHITE);
-            g.drawString("0", (int) (width / 2.15), 60);
+            g.drawString("9999", (int) (width / 2.15), 60);
             g.drawString(String.valueOf(hero.getScore()), (int) (width / 1.26), 60);
 
             for (Enemy enemy : enemies) {
@@ -382,5 +383,22 @@ public class Container implements Level {
             isGameWon = true;
             stopGame();
         }
+    }
+    public Hero getHero() {
+        return hero;
+    }
+
+    public List<Enemy> getEnemies() {
+        return enemies;
+    }
+
+    public int getCurrentLevel() {
+        return currentLevel;
+    }
+
+    public void loadGameState(GameStateSerializer.GameState gameState) {
+        this.hero = gameState.hero;
+        this.enemies = gameState.enemies;
+        this.currentLevel = gameState.currentLevel;
     }
 }

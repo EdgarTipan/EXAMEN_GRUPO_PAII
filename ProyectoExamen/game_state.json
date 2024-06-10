@@ -1,0 +1,97 @@
+{
+  "hero": {
+    "bullets": [],
+    "lastShootTime": 1717999175771,
+    "score": 5,
+    "health": 100,
+    "coord_X": [
+      325,
+      375,
+      425
+    ],
+    "coord_Y": [
+      500,
+      450,
+      500
+    ]
+  },
+  "enemies": [
+    {
+      "bullets": [],
+      "enemyHealth": 20,
+      "active": true,
+      "coord_X": [
+        160,
+        160,
+        185,
+        210,
+        210
+      ],
+      "coord_Y": [
+        130,
+        180,
+        155,
+        180,
+        130
+      ]
+    },
+    {
+      "bullets": [],
+      "enemyHealth": 20,
+      "active": true,
+      "coord_X": [
+        260,
+        260,
+        285,
+        310,
+        310
+      ],
+      "coord_Y": [
+        130,
+        180,
+        155,
+        180,
+        130
+      ]
+    },
+    {
+      "bullets": [],
+      "enemyHealth": 20,
+      "active": true,
+      "coord_X": [
+        460,
+        460,
+        485,
+        510,
+        510
+      ],
+      "coord_Y": [
+        130,
+        180,
+        155,
+        180,
+        130
+      ]
+    },
+    {
+      "bullets": [],
+      "enemyHealth": 20,
+      "active": true,
+      "coord_X": [
+        560,
+        560,
+        585,
+        610,
+        610
+      ],
+      "coord_Y": [
+        130,
+        180,
+        155,
+        180,
+        130
+      ]
+    }
+  ],
+  "currentLevel": 1
+}
