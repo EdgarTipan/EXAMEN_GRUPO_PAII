@@ -1,0 +1,180 @@
+{
+  "hero": {
+    "bullets": [
+      {
+        "posX": 195,
+        "posY": 105,
+        "bulletDamage": 25,
+        "active": true
+      }
+    ],
+    "lastShootTime": 1718014509698,
+    "score": 45,
+    "health": 100,
+    "coord_X": [
+      145,
+      195,
+      245
+    ],
+    "coord_Y": [
+      500,
+      450,
+      500
+    ]
+  },
+  "enemies": [
+    {
+      "bullets": [],
+      "enemyHealth": 60,
+      "active": true,
+      "coord_X": [
+        260,
+        260,
+        285,
+        310,
+        310
+      ],
+      "coord_Y": [
+        140,
+        190,
+        165,
+        190,
+        140
+      ]
+    },
+    {
+      "bullets": [],
+      "enemyHealth": 60,
+      "active": true,
+      "coord_X": [
+        360,
+        360,
+        385,
+        410,
+        410
+      ],
+      "coord_Y": [
+        140,
+        190,
+        165,
+        190,
+        140
+      ]
+    },
+    {
+      "bullets": [],
+      "enemyHealth": 60,
+      "active": true,
+      "coord_X": [
+        460,
+        460,
+        485,
+        510,
+        510
+      ],
+      "coord_Y": [
+        140,
+        190,
+        165,
+        190,
+        140
+      ]
+    },
+    {
+      "bullets": [],
+      "enemyHealth": 60,
+      "active": true,
+      "coord_X": [
+        560,
+        560,
+        585,
+        610,
+        610
+      ],
+      "coord_Y": [
+        140,
+        190,
+        165,
+        190,
+        140
+      ]
+    },
+    {
+      "bullets": [],
+      "enemyHealth": 60,
+      "active": true,
+      "coord_X": [
+        260,
+        260,
+        285,
+        310,
+        310
+      ],
+      "coord_Y": [
+        210,
+        260,
+        235,
+        260,
+        210
+      ]
+    },
+    {
+      "bullets": [],
+      "enemyHealth": 60,
+      "active": true,
+      "coord_X": [
+        360,
+        360,
+        385,
+        410,
+        410
+      ],
+      "coord_Y": [
+        210,
+        260,
+        235,
+        260,
+        210
+      ]
+    },
+    {
+      "bullets": [],
+      "enemyHealth": 60,
+      "active": true,
+      "coord_X": [
+        460,
+        460,
+        485,
+        510,
+        510
+      ],
+      "coord_Y": [
+        210,
+        260,
+        235,
+        260,
+        210
+      ]
+    },
+    {
+      "bullets": [],
+      "enemyHealth": 60,
+      "active": true,
+      "coord_X": [
+        560,
+        560,
+        585,
+        610,
+        610
+      ],
+      "coord_Y": [
+        210,
+        260,
+        235,
+        260,
+        210
+      ]
+    }
+  ],
+  "currentLevel": 2
+}

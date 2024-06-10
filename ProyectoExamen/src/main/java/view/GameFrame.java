@@ -4,14 +4,9 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.InputStreamReader;
 import javax.swing.*;
 
 import controller.Container;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import util.GameStateSerializer;
 
 public class GameFrame extends JFrame implements KeyListener {
@@ -47,18 +42,30 @@ public class GameFrame extends JFrame implements KeyListener {
 		contPanel.setBackground(Color.BLACK);
 		add(contPanel);
 		addKeyListener(this);
-		//showLoadGameDialog();
+		showLoadGameDialog();
 	}
+
 	private void showLoadGameDialog() {
-		String input = JOptionPane.showInputDialog(this, "Ingrese el ID de la partida que desea cargar:", "Cargar Partida", JOptionPane.QUESTION_MESSAGE);
-		if (input != null && !input.trim().isEmpty()) {
-			try {
-				Long gameId = Long.parseLong(input.trim());
-				loadGameState(gameId);
-			} catch (NumberFormatException e) {
-				JOptionPane.showMessageDialog(this, "ID inválido. Comenzando un nuevo juego.", "Error", JOptionPane.ERROR_MESSAGE);
+		int response = JOptionPane.showConfirmDialog(this, "¿Desea cargar una partida jugada anteriormente?", "Cargar Partida", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+		if (response == JOptionPane.YES_OPTION) {
+			String input = JOptionPane.showInputDialog(this, "Ingrese el ID de la partida que desea cargar:", "Cargar Partida", JOptionPane.QUESTION_MESSAGE);
+			if (input != null && !input.trim().isEmpty()) {
+				try {
+					Long gameId = Long.parseLong(input.trim());
+					loadGameState(gameId);
+				} catch (NumberFormatException e) {
+					JOptionPane.showMessageDialog(this, "ID inválido. Comenzando un nuevo juego.", "Error", JOptionPane.ERROR_MESSAGE);
+				}
 			}
+		} else {
+			// Llevar al usuario a la pantalla de inicio
+			showStartScreen();
 		}
+	}
+
+	private void showStartScreen() {
+		isGameRunning = false;
+		contPanel.repaint();
 	}
 
 	public void startGame() {
@@ -78,7 +85,6 @@ public class GameFrame extends JFrame implements KeyListener {
 		timer.start();
 	}
 
-
 	private void saveGameState() {
 		GameStateSerializer serializer = new GameStateSerializer();
 		serializer.saveGameState(con);
@@ -89,6 +95,7 @@ public class GameFrame extends JFrame implements KeyListener {
 		GameStateSerializer.GameState gameState = serializer.loadGameStateFromApi(id);
 		if (gameState != null) {
 			con.loadGameState(gameState);
+			startGame();  // Empezar el juego después de cargar el estado
 		}
 	}
 
